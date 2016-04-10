@@ -15,15 +15,21 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+import java.util.Date;
+
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final String TAG = "MainActivity";
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLocation;
+    private GoogleApiClient mGoogleApiClient;                    //Using GoogleLocationAPI
+    private Location mLocation;                                  //Getting the location
+    private LocationRequest mLocationRequest;                    //For quality of service parameters
+    private String mLastUpdateTime;                              //Show the updated location time
 
     private static final int REQUEST_COARSE_LOCATION = 1;
     private static int getPermissionRequestResult;
@@ -50,22 +56,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
     }
 
-    //    Callbacks for checking connectivity status with Google Play services
+    //Callbacks for checking connectivity status with Google Play services
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(10000);                                 //Can vary depending upon process running
+        mLocationRequest.setFastestInterval(5000);                          //Would not get new location at-least before 3s
+
         try {
-            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (mLocation != null) {
-                mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
-                mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
-            } else {
-                mLatitudeTextView.setText("***");
-                mLongitudeTextView.setText("***");
-                Log.d(TAG, "Location error. Check if location is ON");
-            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         } catch (SecurityException e) {
             e.printStackTrace();
         }
+//        ********************* Requesting Location only when application is first run *******************************
+//
+//        try {
+//            mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+//            if (mLocation != null) {
+//                mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
+//                mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
+//            } else {
+//                mLatitudeTextView.setText("***");
+//                mLongitudeTextView.setText("***");
+//                Toast.makeText(this, "Location error. Check if location is ON",Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (SecurityException e) {
+//            e.printStackTrace();
+//        }
+//        ***********************************************************************************************************
     }
 
     @Override
@@ -77,6 +96,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "Connection Failed: " + connectionResult.getErrorMessage());
+    }
+
+//    This callback if when there is a change in the location
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastUpdateTime = java.text.DateFormat.getTimeInstance().format(new Date());
+        mLongitudeTextView.setText(String.valueOf(location.getLongitude()));
+        mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
+        Toast.makeText(this, "Updated: " + mLastUpdateTime, Toast.LENGTH_SHORT).show();
     }
 
     @Override
