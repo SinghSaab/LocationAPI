@@ -10,7 +10,40 @@
     tools:context="self.locationapi.MainActivity">
 
     <TextView
+        android:id="@+id/latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Latitude:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/latitude_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/latitude"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/latitude"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/longitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="24dp"
+        android:text="Longitude:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/longitude_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/longitude"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/longitude"
+        android:textSize="16sp" />
+
 </RelativeLayout>
