@@ -19,6 +19,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".ActivityIntentService"
+            android:exported="false" />
+
+        <activity android:name=".RecognitionActivity"></activity>
     </application>
 
 </manifest>

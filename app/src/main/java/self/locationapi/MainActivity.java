@@ -2,6 +2,7 @@ package self.locationapi;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static final String TAG = "MainActivity";
     private TextView mLatitudeTextView;
     private TextView mLongitudeTextView;
+    private Button button;
     private GoogleApiClient mGoogleApiClient;                    //Using GoogleLocationAPI
     private Location mLocation;                                  //Getting the location
     private LocationRequest mLocationRequest;                    //For quality of service parameters
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         mLatitudeTextView = (TextView) findViewById((R.id.latitude_textview));
         mLongitudeTextView = (TextView) findViewById((R.id.longitude_textview));
+        button = (Button) findViewById(R.id.button);
 
         verifyLocationPermissions(this);
 
@@ -98,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Log.d(TAG, "Connection Failed: " + connectionResult.getErrorMessage());
     }
 
-//    This callback if when there is a change in the location
+    //    This callback if when there is a change in the location
     @Override
     public void onLocationChanged(Location location) {
         mLastUpdateTime = java.text.DateFormat.getTimeInstance().format(new Date());
@@ -119,6 +124,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
+    }
+
+    public void startRecognition(View view) {
+        Intent newIntent = new Intent(this, RecognitionActivity.class);
+        startActivity(newIntent);
+
     }
 
     //    As of Marshmallow, API 23 we need to explicitly ask for permissions along with mentioning in Manifest
